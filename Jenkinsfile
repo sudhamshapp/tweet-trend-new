@@ -1,4 +1,6 @@
 def registry = 'https://sudhamsh01.jfrog.io'
+def imageName = 'sudhamsh01.jfrog.io/sudhamsh-docker-local/mars'
+def version = '2.1.2'
 
 pipeline {
     agent {
@@ -6,38 +8,38 @@ pipeline {
             label 'maven'
         }
     }
-    
+
     environment {
         PATH = "/opt/apache-maven-3.9.4/bin:$PATH"
     }
-    
+
     stages {
         stage("Build") {
             steps {
-                sh 'mvn clean deploy -Dmaven.test.skip=true' // in the build, whenever we specify deploy, it executes unit test cases as well as part of the build step
+                sh 'mvn clean deploy -Dmaven.test.skip=true'
             }
         }
-        
+
         stage("unit-test") {
             steps {
                 echo "------------unit-test-started----------------"
-                sh 'mvn surefire-report:report' // this is the command to run unit test cases separately; unit test cases by default run as a surefire plugin
+                sh 'mvn surefire-report:report'
                 echo "------------unit-test-completed----------------"
             }
         }
-        
+
         // stage('SonarQube analysis') {
         //     environment {
         //         scannerHome = tool 'sudhamsh-sonar-scanner'  // This is found under Tools
         //     }
-            
+        //     
         //     steps {
         //         withSonarQubeEnv('sonarqube-server') { // This is found under system
         //             sh "${scannerHome}/bin/sonar-scanner" // This communicates with our SonarQube server and sends the analysis report
         //         }
         //     }
         // }
-        
+
         // stage("Quality Gate") {
         //     steps {
         //         script {
@@ -50,7 +52,7 @@ pipeline {
         //         }
         //     }
         // }
-        
+
         stage("Jar Publish") {
             steps {
                 script {
@@ -71,9 +73,31 @@ pipeline {
                     def buildInfo = server.upload(uploadSpec)
                     buildInfo.env.collect()
                     server.publishBuildInfo(buildInfo)
-                    echo '<--------------- Jar Publish Ended --------------->'  
+                    echo '<--------------- Jar Publish Ended --------------->'
                 }
-            }   
+            }
+        }
+
+        stage("Docker Build") {
+            steps {
+                script {
+                    echo '<--------------- Docker Build Started --------------->'
+                    app = docker.build(imageName + ":" + version)
+                    echo '<--------------- Docker Build Ends --------------->'
+                }
+            }
+        }
+
+        stage("Docker Publish") {
+            steps {
+                script {
+                    echo '<--------------- Docker Publish Started --------------->'
+                    docker.withRegistry(registry, 'jfrog-credentials') {
+                        app.push()
+                    }
+                    echo '<--------------- Docker Publish Ended --------------->'
+                }
+            }
         }
     }
 }
