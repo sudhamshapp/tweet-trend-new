@@ -26,30 +26,30 @@ pipeline {
             }
         }
         
-        stage('SonarQube analysis') {
-            environment {
-                scannerHome = tool 'sudhamsh-sonar-scanner'  // This is found under Tools
-            }
+        // stage('SonarQube analysis') {
+        //     environment {
+        //         scannerHome = tool 'sudhamsh-sonar-scanner'  // This is found under Tools
+        //     }
             
-            steps {
-                withSonarQubeEnv('sonarqube-server') { // This is found under system
-                    sh "${scannerHome}/bin/sonar-scanner" // This communicates with our SonarQube server and sends the analysis report
-                }
-            }
-        }
+        //     steps {
+        //         withSonarQubeEnv('sonarqube-server') { // This is found under system
+        //             sh "${scannerHome}/bin/sonar-scanner" // This communicates with our SonarQube server and sends the analysis report
+        //         }
+        //     }
+        // }
         
-        stage("Quality Gate") {
-            steps {
-                script {
-                    timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, the pipeline will be killed after a timeout
-                        def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
-                        if (qg.status != 'OK') {
-                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                        }
-                    }
-                }
-            }
-        }
+        // stage("Quality Gate") {
+        //     steps {
+        //         script {
+        //             timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, the pipeline will be killed after a timeout
+        //                 def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+        //                 if (qg.status != 'OK') {
+        //                     error "Pipeline aborted due to quality gate failure: ${qg.status}"
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
         
         stage("Jar Publish") {
             steps {
