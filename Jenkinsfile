@@ -12,16 +12,16 @@ pipeline {
     stages {
         stage("Build") {
             steps {
-                sh 'mvn clean deploy -Dmaven.test.skip=true' // in the build whenever we specify deploy it executes unit test cases as well as part of build step
+                sh 'mvn clean deploy -Dmaven.test.skip=true' // in the build, whenever we specify deploy, it executes unit test cases as well as part of the build step
             }
         }
-        stage("unit-test"){
-            steps{
+        
+        stage("unit-test") {
+            steps {
                 echo "------------unit-test-started----------------"
-                sh 'mvn surefire-report:report' //this is the command to run unit test cases separately, unit test cases by default runs as a surefire plugin
+                sh 'mvn surefire-report:report' // this is the command to run unit test cases separately; unit test cases by default run as a surefire plugin
                 echo "------------unit-test-completed----------------"
             }
-
         }
         
         stage('SonarQube analysis') {
@@ -32,6 +32,19 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonarqube-server') { // This is found under system
                     sh "${scannerHome}/bin/sonar-scanner" // This communicates with our SonarQube server and sends the analysis report
+                }
+            }
+        }
+        
+        stage("Quality Gate") {
+            steps {
+                script {
+                    timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, the pipeline will be killed after a timeout
+                        def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                        }
+                    }
                 }
             }
         }
