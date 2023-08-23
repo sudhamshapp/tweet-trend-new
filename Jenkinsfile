@@ -12,8 +12,16 @@ pipeline {
     stages {
         stage("Build") {
             steps {
-                sh 'mvn clean deploy'
+                sh 'mvn clean deploy -Dmaven.test.skip=true' // in the build whenever we specify deploy it executes unit test cases as well as part of build step
             }
+        }
+        stage("unit-test"){
+            steps{
+                echo "------------unit-test-started----------------"
+                sh 'mvn surefire-report:report' //this is the command to run unit test cases separately, unit test cases by default runs as a surefire plugin
+                echo "------------unit-test-completed----------------"
+            }
+
         }
         
         stage('SonarQube analysis') {
