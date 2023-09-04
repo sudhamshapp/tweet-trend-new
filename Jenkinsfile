@@ -1,6 +1,6 @@
 def registry = 'https://marssudhamsh.jfrog.io/'
-// def imageName = 'sudhamsh01.jfrog.io/sudhamsh-docker-local/mars'
-// def version = '2.1.2'
+def imageName = 'sudhamsh01.jfrog.io/sudhamsh-docker-local/mars'
+def version = '2.1.2'
 
 pipeline {
     agent {
@@ -78,27 +78,27 @@ pipeline {
             }
         }
 
-        // stage("Docker Build") {
-        //     steps {
-        //         script {
-        //             echo '<--------------- Docker Build Started --------------->'
-        //             app = docker.build(imageName + ":" + version)
-        //             echo '<--------------- Docker Build Ends --------------->'
-        //         }
-        //     }
-        // }
+        stage("Docker Build") {
+            steps {
+                script {
+                    echo '<--------------- Docker Build Started --------------->'
+                    app = docker.build(imageName + ":" + version)
+                    echo '<--------------- Docker Build Ends --------------->'
+                }
+            }
+        }
 
-        // stage("Docker Publish") {
-        //     steps {
-        //         script {
-        //             echo '<--------------- Docker Publish Started --------------->'
-        //             docker.withRegistry(registry, 'jfrog-credentials') {
-        //                 app.push()
-        //             }
-        //             echo '<--------------- Docker Publish Ended --------------->'
-        //         }
-        //     }
-        // }
+        stage("Docker Publish") {
+            steps {
+                script {
+                    echo '<--------------- Docker Publish Started --------------->'
+                    docker.withRegistry(registry, 'jfrog-credentials') {
+                        app.push()
+                    }
+                    echo '<--------------- Docker Publish Ended --------------->'
+                }
+            }
+        }
     }
 }
 
@@ -139,25 +139,25 @@ pipeline {
 
 
 
-pipeline {
-    agent any
-    stages {
-        stage() {
-            steps {
-                echo "cloning the git"
+// pipeline {
+//     agent any
+//     stages {
+//         stage() {
+//             steps {
+//                 echo "cloning the git"
 
-            }
-        }
-        stage() {
-            steps {
-                echo "building the app"
-            }
-        }
-        stage() {
-            steps {
-                echo "deploying the app"
+//             }
+//         }
+//         stage() {
+//             steps {
+//                 echo "building the app"
+//             }
+//         }
+//         stage() {
+//             steps {
+//                 echo "deploying the app"
                 
-            }
-        }
-    }
-}
+//             }
+//         }
+//     }
+// }
