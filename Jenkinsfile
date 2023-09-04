@@ -1,6 +1,6 @@
-def registry = 'https://sudhamsh01.jfrog.io'
-def imageName = 'sudhamsh01.jfrog.io/sudhamsh-docker-local/mars'
-def version = '2.1.2'
+def registry = 'https://marssudhamsh.jfrog.io/'
+// def imageName = 'sudhamsh01.jfrog.io/sudhamsh-docker-local/mars'
+// def version = '2.1.2'
 
 pipeline {
     agent {
@@ -55,7 +55,7 @@ pipeline {
 
         stage("Jar Publish") {
             steps {
-                script {
+                script { // this is a groovy script
                     echo '<--------------- Jar Publish Started --------------->'
                     def server = Artifactory.newServer(url: registry + "/artifactory", credentialsId: "jfrog-credentials")
                     def properties = "buildid=${env.BUILD_ID},commitid=${GIT_COMMIT}";
@@ -78,25 +78,85 @@ pipeline {
             }
         }
 
-        stage("Docker Build") {
+        // stage("Docker Build") {
+        //     steps {
+        //         script {
+        //             echo '<--------------- Docker Build Started --------------->'
+        //             app = docker.build(imageName + ":" + version)
+        //             echo '<--------------- Docker Build Ends --------------->'
+        //         }
+        //     }
+        // }
+
+        // stage("Docker Publish") {
+        //     steps {
+        //         script {
+        //             echo '<--------------- Docker Publish Started --------------->'
+        //             docker.withRegistry(registry, 'jfrog-credentials') {
+        //                 app.push()
+        //             }
+        //             echo '<--------------- Docker Publish Ended --------------->'
+        //         }
+        //     }
+        // }
+    }
+}
+
+
+
+// pipeline {
+//     agent any
+//     stages{
+//         stage('clone'){
+//             steps{
+//                 echo "cloning the git"
+
+//             }
+//         }
+//         stage('Build'){
+//             steps{
+//                 echo "build the app"
+
+//             }
+//         }
+//         stage('publish the artifactory'){
+//             steps{
+//                 echo "deploying the app"
+
+//             }
+//         }
+
+
+
+//     }
+
+// }
+
+
+
+
+
+
+
+
+pipeline {
+    agent any
+    stages {
+        stage() {
             steps {
-                script {
-                    echo '<--------------- Docker Build Started --------------->'
-                    app = docker.build(imageName + ":" + version)
-                    echo '<--------------- Docker Build Ends --------------->'
-                }
+                echo "cloning the git"
+
             }
         }
-
-        stage("Docker Publish") {
+        stage() {
             steps {
-                script {
-                    echo '<--------------- Docker Publish Started --------------->'
-                    docker.withRegistry(registry, 'jfrog-credentials') {
-                        app.push()
-                    }
-                    echo '<--------------- Docker Publish Ended --------------->'
-                }
+                echo "building the app"
+            }
+        }
+        stage() {
+            steps {
+                echo "deploying the app"
+                
             }
         }
     }
