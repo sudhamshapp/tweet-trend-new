@@ -99,6 +99,13 @@ pipeline {
                 }
             }
         }
+        stage('Deploy on to kubernetes'){
+            steps{
+                script{
+                    sh './deploy.sh'
+                }
+            }
+        }
     }
 }
 
