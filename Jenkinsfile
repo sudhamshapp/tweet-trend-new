@@ -1,6 +1,6 @@
 def registry = 'https://sudhamsh07.jfrog.io/'
-// def imageName = 'marssudhamsh.jfrog.io/mars-docker-local/generatedimage'
-// def version = '2.1.2'
+def imageName = 'sudhamsh07.jfrog.io/jupiter-docker-local/generatedimage'
+def version = '2.1.2'
 
 pipeline {
     agent {
@@ -78,27 +78,27 @@ pipeline {
             }
         }
 
-        // stage("Docker Build") {
-        //     steps {
-        //         script {
-        //             echo '<--------------- Docker Build Started --------------->'
-        //             app = docker.build(imageName + ":" + version)
-        //             echo '<--------------- Docker Build Ends --------------->'
-        //         }
-        //     }
-        // }
+        stage("Docker Build") {
+            steps {
+                script {
+                    echo '<--------------- Docker Build Started --------------->'
+                    app = docker.build(imageName + ":" + version)
+                    echo '<--------------- Docker Build Ends --------------->'
+                }
+            }
+        }
 
-        // stage("Docker Publish") {
-        //     steps {
-        //         script {
-        //             echo '<--------------- Docker Publish Started --------------->'
-        //             docker.withRegistry(registry, 'jfrog-credentials') {
-        //                 app.push()
-        //             }
-        //             echo '<--------------- Docker Publish Ended --------------->'
-        //         }
-        //     }
-        // }
+        stage("Docker Publish") {
+            steps {
+                script {
+                    echo '<--------------- Docker Publish Started --------------->'
+                    docker.withRegistry(registry, 'jfrog-credentials') {
+                        app.push()
+                    }
+                    echo '<--------------- Docker Publish Ended --------------->'
+                }
+            }
+        }
     }
 }
 
