@@ -1,6 +1,6 @@
 def registry = 'https://sudhamsh07.jfrog.io/'
 def imageName = 'sudhamsh07.jfrog.io/jupiter-docker-local/generatedimage'
-def version = '2.1.2'
+def version = '2.1.3'
 
 pipeline {
     agent {
