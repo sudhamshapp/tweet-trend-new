@@ -9,5 +9,5 @@
 
 
 FROM openjdk:8
-ADD jarstaging/com/valaxy/demo-workshop/2.1.2/demo-workshop-2.1.2.jar sudhamsh-custom.jar 
+ADD jarstaging/com/valaxy/demo-workshop/2.1.3/demo-workshop-2.1.3.jar sudhamsh-custom.jar 
 ENTRYPOINT ["java", "-jar", "sudhamsh-custom.jar"]
