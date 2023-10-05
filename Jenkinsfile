@@ -102,7 +102,7 @@ pipeline {
         stage('Deploy on to kubernetes'){
             steps{
                 script{
-                    sh './deploy.sh'
+                    sh './kubernetes/deploy.sh'
                 }
             }
         }
